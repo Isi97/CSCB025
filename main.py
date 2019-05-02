@@ -43,6 +43,7 @@ class MyGrid(GridLayout):
         self.userAlternative.add_widget(Label(text="Alternative " + str(self.__alternativeCount),size_hint_y=None, height = 50))
         self.userInputRoot.add_widget(self.userAlternative)
 
+        #USE ALTERNATIVES INPUT
         self.userAlternativeInput = GridLayout(size_hint_x=None, size_hint_y=None, width=100, height = 500)
         self.userAlternativeInput.cols = 1
         self.userAlternativeInput.add_widget(TextInput(multiline=False,size_hint_y=None, height = 50))
@@ -72,11 +73,11 @@ class MyGrid(GridLayout):
         self.alternative.cols = 1
 
         self.submit = Button(text="alternative +", font_size=30, size_hint_x=None, size_hint_y=None, width=170, height = 50)
-        self.submit.bind(on_press=self.criteriaPlus)
+        self.submit.bind(on_press=self.alternativePlus)
         self.alternative.add_widget(self.submit)
 
         self.submit = Button(text="alternative -", font_size=30, size_hint_x=None, size_hint_y=None, width=170, height = 50)
-        self.submit.bind(on_press=self.criteriaPlus)
+        self.submit.bind(on_press=self.alternativeMinus)
         self.alternative.add_widget(self.submit)
 
         self.add_widget(self.alternative)
@@ -86,7 +87,7 @@ class MyGrid(GridLayout):
         #name = self.name.text
         
         self.__criteriaCount += 1
-        self.userCriteration.add_widget(Label(text="Criteria " + str(self.__criteriaCount)))
+        self.userCriteration.add_widget(Label(text="Criteria " + str(self.__criteriaCount),size_hint_x=None, width = 100))
         self.userCriteration.cols = self.__criteriaCount
 
         #print(self.__criteriaCount)
@@ -99,7 +100,18 @@ class MyGrid(GridLayout):
             return
         self.__criteriaCount -= 1
         self.userCriteration.cols = self.__criteriaCount
-        self.userCriteration.remove_widget(self.userCriteration.children[self.__criteriaCount-1])
+        self.userCriteration.remove_widget(self.userCriteration.children[0])
+
+    def alternativePlus(self, instance):
+        self.__alternativeCount += 1
+        self.userAlternative.add_widget(Label(text="Alternative " + str(self.__alternativeCount),size_hint_y=None, height = 50))
+    
+    def alternativeMinus(self, instance):
+        if self.__alternativeCount == 1:
+            return
+        self.__alternativeCount -= 1
+        self.userAlternative.remove_widget(self.userAlternative.children[0])
+
 
 class MyApp(App):
     def build(self):
