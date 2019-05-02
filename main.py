@@ -25,7 +25,7 @@ class MyGrid(GridLayout):
             #self.rect = Rectangle(size=self.size,pos=self.pos)
 
         #USER INPUT GRID
-        self.userInputRoot = GridLayout(size_hint_x=None, size_hint_y=None, width=500, height = 400)
+        self.userInputRoot = GridLayout(size_hint_x=None, width=500)
         self.userInputRoot.cols = 2
 
         test = Label(text="Alternative / Criteria ",size_hint_x=None, size_hint_y=None, width=150, height = 50)
@@ -38,13 +38,13 @@ class MyGrid(GridLayout):
         self.userInputRoot.add_widget(self.userCriteration) 
  
         #USE ALTERNATIVES
-        self.userAlternative = GridLayout(size_hint_x=None, size_hint_y=None, width=100, height = 500)
+        self.userAlternative = GridLayout(size_hint_x=None, width=100)
         self.userAlternative.cols = 1
         self.userAlternative.add_widget(Label(text="Alternative " + str(self.__alternativeCount),size_hint_y=None, height = 50))
         self.userInputRoot.add_widget(self.userAlternative)
 
         #USE ALTERNATIVES INPUT
-        self.userAlternativeInput = GridLayout(size_hint_x=None, size_hint_y=None, width=450, height = 500)
+        self.userAlternativeInput = GridLayout(size_hint_x=None, width=450)
         self.userAlternativeInput.cols = 1
         self.userAlternativeInput.add_widget(TextInput(multiline=False,size_hint_y=None, height = 50,size_hint_x=None, width = 100))
         self.userInputRoot.add_widget(self.userAlternativeInput)
@@ -69,7 +69,7 @@ class MyGrid(GridLayout):
         self.add_widget(self.criteration)
 
         #ALTERNATIVE BUTTONS
-        self.alternative = GridLayout()
+        self.alternative = GridLayout(size_hint_y=None, height = 100)
         self.alternative.cols = 1
 
         self.submit = Button(text="alternative +", font_size=25, size_hint_x=None, size_hint_y=None, width=150, height = 50)
