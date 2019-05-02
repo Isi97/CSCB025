@@ -34,11 +34,11 @@ class MyGrid(GridLayout):
         self.criteration.cols = 2
 
         self.submit = Button(text="criteria +", font_size=30)
-        self.submit.bind(on_press=self.pressed)
+        self.submit.bind(on_press=self.criteriaPlus)
         self.criteration.add_widget(self.submit)
 
         self.submit = Button(text="criteria -", font_size=30)
-        self.submit.bind(on_press=self.pressed)
+        self.submit.bind(on_press=self.criteriaMinus)
         self.criteration.add_widget(self.submit)
 
         self.add_widget(self.criteration)
@@ -48,25 +48,34 @@ class MyGrid(GridLayout):
         self.alternative.cols = 2
 
         self.submit = Button(text="alternative +", font_size=30)
-        self.submit.bind(on_press=self.pressed)
+        self.submit.bind(on_press=self.criteriaPlus)
         self.alternative.add_widget(self.submit)
 
         self.submit = Button(text="alternative -", font_size=30)
-        self.submit.bind(on_press=self.pressed)
+        self.submit.bind(on_press=self.criteriaPlus)
         self.alternative.add_widget(self.submit)
 
         self.add_widget(self.alternative)
 
 
-    def pressed(self, instance):
-        name = self.name.text
+    def criteriaPlus(self, instance):
+        #name = self.name.text
+        
+        self.__criteriaCount += 1
+        self.userCriteration.add_widget(Label(text="Criteria " + str(self.__criteriaCount)))
+        self.userCriteration.cols = self.__criteriaCount
 
-        self.userInputRoot.add_widget(Label(text="Email2222: "))
-        self.email = TextInput(multiline=False)
-        self.userInputRoot.add_widget(self.email)
+        #print(self.__criteriaCount)
 
-        print("Name:", name)
-        self.name.text = ""
+        #print("Name:", name)
+        #self.name.text = ""
+
+    def criteriaMinus(self, instance):
+        if self.__criteriaCount == 1:
+            return
+        self.__criteriaCount -= 1
+        self.userCriteration.cols = self.__criteriaCount
+        self.userCriteration.remove_widget(self.userCriteration.children[self.__criteriaCount-1])
 
 class MyApp(App):
     def build(self):
