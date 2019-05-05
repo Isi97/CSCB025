@@ -4,9 +4,10 @@ from kivy.uix.label import Label
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
+from kivy.uix.togglebutton import ToggleButton
 from kivy.graphics import Color
 from kivy.graphics import Rectangle
-
+from kivy.uix.checkbox import CheckBox
 
 
 class MyGrid(GridLayout):
@@ -25,7 +26,7 @@ class MyGrid(GridLayout):
             #self.rect = Rectangle(size=self.size,pos=self.pos)
 
         #USER INPUT GRID
-        self.userInputRoot = GridLayout(size_hint_x=None, width=500)
+        self.userInputRoot = GridLayout(size_hint_x=None, width=650)
         self.userInputRoot.cols = 2
 
         test = Label(text="Alternative / Criteria ",size_hint_x=None, size_hint_y=None, width=150, height = 50)
@@ -69,18 +70,37 @@ class MyGrid(GridLayout):
         self.add_widget(self.criteration)
 
         #ALTERNATIVE BUTTONS
-        self.alternative = GridLayout(size_hint_y=None, height = 100)
-        self.alternative.cols = 1
+        self.alternative = GridLayout(size_hint_y=None,size_hint_x=None, height = 100, width=155)
+        self.alternative.cols = 2
 
         self.submit = Button(text="alternative +", font_size=25, size_hint_x=None, size_hint_y=None, width=150, height = 50)
         self.submit.bind(on_press=self.alternativePlus)
         self.alternative.add_widget(self.submit)
+
+        self.result = Label(text="",size_hint_x=None, size_hint_y=None, width=300, height = 50, font_size=20)
+        self.alternative.add_widget(self.result)
 
         self.submit = Button(text="alternative -", font_size=25, size_hint_x=None, size_hint_y=None, width=150, height = 50)
         self.submit.bind(on_press=self.alternativeMinus)
         self.alternative.add_widget(self.submit)
 
         self.add_widget(self.alternative)
+
+        #RESULT
+        resultGrid = GridLayout(size_hint_x=None, size_hint_y=None, width=200, height = 200)
+        resultGrid.cols = 1
+        self.submit = Button(text="CALCULATE", font_size=25, size_hint_x=None, size_hint_y=None, width=150, height = 50)
+        self.submit.bind(on_press=self.calculate)
+        
+
+        btn1 = ToggleButton(text='AHP', group='method',state='down')
+        btn2 = ToggleButton(text='TOPSIS', group='method' )
+        resultGrid.add_widget(btn1)
+        resultGrid.add_widget(btn2)
+
+        resultGrid.add_widget(self.submit)
+
+        self.add_widget(resultGrid)
 
 
     def criteriaPlus(self, instance):
@@ -134,7 +154,20 @@ class MyGrid(GridLayout):
                 self.userAlternativeInput.remove_widget(self.userAlternativeInput.children[0])
 
         self.userAlternativeInput.cols = self.__criteriaCount
+    
+    def calculate(self, instance):
+        #print only for now
+        #self.result.text += "DSADASDAS"
+        self.result.text = ""
 
+        #for i in range(self.__criteriaCount * self.__alternativeCount):
+        count = 0
+        for i in reversed(self.userAlternativeInput.children):
+            count += 1
+            self.result.text += i.text
+            self.result.text += " "
+            if count % self.__criteriaCount == 0:
+                self.result.text += "\n"
 
 class MyApp(App):
     def build(self):
