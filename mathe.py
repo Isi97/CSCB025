@@ -173,29 +173,7 @@ def _idealize(matrix, lim):
     return (result_i, result_ai)
 
 
-def topsis():
-    crit_name = ["Style", "Reliability", "Economy", "Price"]
-    crit_weight = [
-        0.1,  # Style
-        0.4,  # Reliability
-        0.4,  # Economy
-        0.2  # Price
-    ]
-    crit_lim = [
-        1,  # Style
-        1,  # Reliability
-        1,  # Economy
-        -1  # Price
-    ]
-    alt_name = ["Honda", "Saturn", "Ford", "Mazda"]
-    crit_alt_matrix = [
-        # S  R  E  P
-        [7, 9, 9, 8],  # Honda
-        [8, 7, 8, 7],  # Saturn
-        [9, 6, 8, 9],  # Ford
-        [6, 7, 8, 6]   # Mazda
-    ]
-
+def topsis(crit_alt_matrix, crit_weight , crit_lim  ):
     # calc
     normalized = _normalize(crit_alt_matrix)
     weightened = _weighten(normalized, crit_weight)
@@ -221,6 +199,33 @@ def topsis():
     print(result_mx)
     print()
     print()
+
+
+
+def topsis_test_input():
+    crit_name = ["Style", "Reliability", "Economy", "Price"]
+    crit_weight = [
+        0.1,  # Style
+        0.4,  # Reliability
+        0.4,  # Economy
+        0.2  # Price
+    ]
+    crit_lim = [
+        1,  # Style
+        1,  # Reliability
+        1,  # Economy
+        -1  # Price
+    ]
+    alt_name = ["Honda", "Saturn", "Ford", "Mazda"]
+    crit_alt_matrix = [
+        # S  R  E  P
+        [7, 9, 9, 8],  # Honda
+        [8, 7, 8, 7],  # Saturn
+        [9, 6, 8, 9],  # Ford
+        [6, 7, 8, 6]   # Mazda
+    ]
+
+    topsis(crit_alt_matrix, crit_weight, crit_lim)
 
 
 # topsis()
@@ -312,5 +317,8 @@ def ahp():
     #print() used to compare whether wsm and ahp find the correct sorting order with random data
     #wsm(criteria_importance, raw_alternative_data, ["Min", "Max", "Max", "Max"])
 
+## UNCOMMENT NEXT TO TEST RAW INPUT
 
-ahp()
+#ahp()
+topsis_test_input()
+#wsmdemo()

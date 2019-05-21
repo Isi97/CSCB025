@@ -8,6 +8,8 @@ from kivy.uix.togglebutton import ToggleButton
 from kivy.graphics import Color
 from kivy.graphics import Rectangle
 from kivy.uix.checkbox import CheckBox
+import numpy as np
+from mathe import topsis
 
 
 class MyGrid(GridLayout):
@@ -93,8 +95,8 @@ class MyGrid(GridLayout):
         self.submit.bind(on_press=self.calculate)
         
 
-        btn1 = ToggleButton(text='AHP', group='method',state='down')
-        btn2 = ToggleButton(text='TOPSIS', group='method' )
+        btn1 = ToggleButton(text='AHP', group='method')
+        btn2 = ToggleButton(text='TOPSIS', group='method', state='down')
         resultGrid.add_widget(btn1)
         resultGrid.add_widget(btn2)
 
@@ -156,18 +158,52 @@ class MyGrid(GridLayout):
         self.userAlternativeInput.cols = self.__criteriaCount
     
     def calculate(self, instance):
-        #print only for now
-        #self.result.text += "DSADASDAS"
+        # TESTING TOPSIS...
         self.result.text = ""
 
-        #for i in range(self.__criteriaCount * self.__alternativeCount):
+
+        crit_alt_matrix = [[]]
+        crit_weight = None
+        crit_lim = None
+
+        #crit_alt_matrix = np.empty((self.__alternativeCount, self.__criteriaCount))
+        crit_alt_matrix = [[0 for i in range(self.__criteriaCount)] for i in range(self.__alternativeCount)]
+
+        print(crit_alt_matrix)
+
         count = 0
+        columnIndex = 0
+        rowIndex  = 0
         for i in reversed(self.userAlternativeInput.children):
             count += 1
-            self.result.text += i.text
-            self.result.text += " "
-            if count % self.__criteriaCount == 0:
-                self.result.text += "\n"
+            #self.result.text += i.text
+            #self.result.text += " "
+            
+            #print(rowIndex , " ", columnIndex)
+
+            crit_alt_matrix[rowIndex][columnIndex] = int(i.text) #only real number...
+
+            columnIndex += 1
+            #if count % self.__criteriaCount == 0:
+            if columnIndex > len(crit_alt_matrix[0]) - 1:
+                columnIndex = 0
+                rowIndex += 1
+                #self.result.text += "\n"
+
+
+        # each has same weight TODO provide option to be insert from gui...
+        crit_weight = [1 / self.__criteriaCount for i in range(self.__criteriaCount)]
+
+        # ? TODO probably also has to be inserted from gui
+        crit_lim = [1 for i in range(self.__criteriaCount)]
+
+        #print(crit_weight)
+
+        topsis(crit_alt_matrix, crit_weight, crit_lim )
+
+        #print(crit_weight)
+
+        #print(crit_alt_matrix)
 
 class MyApp(App):
     def build(self):
