@@ -200,6 +200,8 @@ def topsis(crit_alt_matrix, crit_weight , crit_lim  ):
     print()
     print()
 
+    return result, result_mn, result_mx
+
 
 
 def topsis_test_input():
@@ -214,7 +216,7 @@ def topsis_test_input():
         1,  # Style
         1,  # Reliability
         1,  # Economy
-        -1  # Price
+        1  # Price
     ]
     alt_name = ["Honda", "Saturn", "Ford", "Mazda"]
     crit_alt_matrix = [
