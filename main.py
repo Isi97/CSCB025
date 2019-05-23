@@ -273,25 +273,34 @@ class MyGrid(GridLayout):
         
         result, min, max =  topsis(crit_alt_matrix, crit_weight, crit_lim )
 
+        count = len(self.userAlternative.children)
+        minName = None
+        maxName = None
+
+        for i in result:
+            count -= 1
+            if i == min:
+                minName = self.userAlternative.children[count].text
+            if i == max:
+                maxName = self.userAlternative.children[count].text
+            #print(i)
+
+        #print(minName)
+
         self.result.text = "Result:\n" 
         self.result.text += str(result)
         self.result.text += "\n"
-        self.result.text += "Min:"
+        self.result.text += "Min"
+        self.result.text += "(" + minName + "):"
         self.result.text += "\n"
         #self.result.text += "Alternative "
         #self.result.text += result.index(min)
         self.result.text += str(min)
         self.result.text += "\n"
-        self.result.text += "Max:"
+        self.result.text += "Max"
+        self.result.text += "(" + maxName + "):"
         self.result.text += "\n"
         self.result.text += str(max)
-
-        
-        
-
-
-        
-
 
 
 class MyApp(App):
