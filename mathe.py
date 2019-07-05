@@ -8,9 +8,12 @@ np.set_printoptions(precision=18, linewidth=200)
 cnames = ["Price", "Style", "Reliability"]
 ctypes = ["Min", "Max", "Max"]
 
+# price style rel speed force
+# 
+
 # temporary criteria weights for testing
 temp_ci = [
-    [1, 7, 1],
+    [1,  7,  1],
     [1/7, 1, 2],
     [1, 0.5, 1]
 ]
@@ -54,6 +57,8 @@ def eigen(matrix):
 # the np array
 
 def normalize_with_linear_transformation(imatrix, ctypes):
+    print(ctypes)
+
     # remove this once non-numpy arrays are no longer being used
     matrix = np.array(imatrix, np.float64)
 
@@ -63,8 +68,9 @@ def normalize_with_linear_transformation(imatrix, ctypes):
 
     maxvec = matrix.max(axis=0)
 
-    for i in range(len(imatrix)):
-        if ctypes[i] == "Min":
+    # -1 indicates a 'MIN' criterion
+    for i in range(len(imatrix[0])):
+        if ctypes[i] == "Min": 
             for j in range(len(imatrix)):
                 matrix[j][i] *= -1
 
@@ -85,36 +91,14 @@ def weight(matrix, weights):
 
 def wsmdemo():
     importance = eigen(temp_ci)
-    normalized = normalize_with_linear_transformation(rawm)
+    normalized = normalize_with_linear_transformation(rawm,ctypes)
     sums = np.dot(normalized, importance)
     print(sums)
 
 
-# te = buildMM()
-# ahp(te)
-'''
-for c in criteria_names:
-    print(c)
-    print()
-    print(te[c])
-    print()
-'''
-
-
-# ahpreal()
-# print(eigen(temp_ci))
-
-# print(normalize_with_linear_transformation(rawm))
-print()
-# print(_normalize(rawm))
-print()
-# print(eigen(temp_ci))
-print()
-# ahpreal()
-
-
 # functions used for topsys
 # lim
+'''
 def _idealize(matrix, ctypes):
     result_i = []
     result_ai = []
@@ -128,13 +112,16 @@ def _idealize(matrix, ctypes):
             result_i.append(mx[k])
             result_ai.append(mn[k])
     return (result_i, result_ai)
-
+'''
 
 # currently using the criteria weights being used in ahp, temp_ci for topsis testing
 
 ###################################
 
 def _normalize(matrix):
+    matrix = np.array(matrix)
+    matrix = matrix.astype(np.int)
+
     return np.array(matrix) / np.sqrt(np.sum(np.square(np.transpose(matrix)), axis=1))
 
 
@@ -164,16 +151,39 @@ def _idealize(matrix, lim):
     mn = matrix.min(0)
     mx = matrix.max(0)
     for k, v in enumerate(lim):
-        if v < 0:
+        print(str(k) + " " + v)
+        if v == "Min":
             result_i.append(mn[k])
             result_ai.append(mx[k])
-        elif v > 0:
+        elif v == "Max":
             result_i.append(mx[k])
             result_ai.append(mn[k])
     return (result_i, result_ai)
 
 
-def topsis(crit_alt_matrix, crit_weight , crit_lim  ):
+def topsis():
+    crit_name = ["Style", "Reliability", "Economy", "Price"]
+    crit_weight = [
+        0.1,  # Style
+        0.4,  # Reliability
+        0.4,  # Economy
+        0.2  # Price
+    ]
+    crit_lim = [
+        1,  # Style
+        1,  # Reliability
+        1,  # Economy
+        -1  # Price
+    ]
+    alt_name = ["Honda", "Saturn", "Ford", "Mazda"]
+    crit_alt_matrix = [
+        # S  R  E  P
+        [7, 9, 9, 8],  # Honda
+        [8, 7, 8, 7],  # Saturn
+        [9, 6, 8, 9],  # Ford
+        [6, 7, 8, 6]   # Mazda
+    ]
+
     # calc
     normalized = _normalize(crit_alt_matrix)
     weightened = _weighten(normalized, crit_weight)
@@ -200,35 +210,6 @@ def topsis(crit_alt_matrix, crit_weight , crit_lim  ):
     print()
     print()
 
-    return result, result_mn, result_mx
-
-
-
-def topsis_test_input():
-    crit_name = ["Style", "Reliability", "Economy", "Price"]
-    crit_weight = [
-        0.1,  # Style
-        0.4,  # Reliability
-        0.4,  # Economy
-        0.2  # Price
-    ]
-    crit_lim = [
-        1,  # Style
-        1,  # Reliability
-        1,  # Economy
-        1  # Price
-    ]
-    alt_name = ["Honda", "Saturn", "Ford", "Mazda"]
-    crit_alt_matrix = [
-        # S  R  E  P
-        [7, 9, 9, 8],  # Honda
-        [8, 7, 8, 7],  # Saturn
-        [9, 6, 8, 9],  # Ford
-        [6, 7, 8, 6]   # Mazda
-    ]
-
-    topsis(crit_alt_matrix, crit_weight, crit_lim)
-
 
 # topsis()
 
@@ -246,7 +227,7 @@ def createMegaMatrix(criteria_names, raw_alternative_data):
         for i in range(len(raw_alternative_data)):
             component_row = []
             for j in range(len(raw_alternative_data)):
-                component_row.append( raw_alternative_data[i][ci]/raw_alternative_data[j][ci] )
+                component_row.append( int(raw_alternative_data[i][ci]) / int(raw_alternative_data[j][ci]) )
 
             mm_component.append(component_row)
 
@@ -319,8 +300,51 @@ def ahp():
     #print() used to compare whether wsm and ahp find the correct sorting order with random data
     #wsm(criteria_importance, raw_alternative_data, ["Min", "Max", "Max", "Max"])
 
-## UNCOMMENT NEXT TO TEST RAW INPUT
 
-#ahp()
-topsis_test_input()
-#wsmdemo()
+
+class Solver():
+    def wsm(absorb, decisionproblem):
+        importance = eigen(decisionproblem.criteria_importance)
+        normalized = normalize_with_linear_transformation(decisionproblem.decisionMatrix, decisionproblem.getCriterionTypes())
+        sums = np.dot(normalized, importance)
+        
+        return sums
+
+    def ahp(absorb, decisionproblem):
+        _importance = eigen(decisionproblem.criteria_importance)
+    
+
+        # Matrices comparing each ALL alternatives by ONE criterion
+        megamatrix = createMegaMatrix(decisionproblem.getCriteriaNames(), decisionproblem.decisionMatrix);
+
+
+        _eigen_alt_data = []
+
+        for cname in decisionproblem.getCriteriaNames():
+            temp = eigen(megamatrix[cname])
+            _eigen_alt_data.append(temp)
+
+        _eigen_alt_data = np.array(_eigen_alt_data).transpose()
+
+        weighted = np.dot(_eigen_alt_data, _importance)
+  
+        return weighted
+
+    def topsis(absorb, decisionproblem):
+        crit_weight = eigen(decisionproblem.criteria_importance)
+
+        normalized = _normalize(decisionproblem.decisionMatrix)
+        weightened = _weighten(normalized, crit_weight)
+        ideal, anti_ideal = _idealize(weightened, decisionproblem.getCriteriaMinOrMax())
+        print("ideal")
+        print(ideal)
+        print()
+        print(anti_ideal)
+        dist_ideal = _distantize(weightened, ideal)
+        dist_anti_ideal = _distantize(weightened, anti_ideal)
+
+        result = dist_anti_ideal / (dist_ideal + dist_anti_ideal)
+        return result
+
+    def en():
+        pass
