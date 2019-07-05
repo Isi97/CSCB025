@@ -1,0 +1,28 @@
+#:kivy 1.10.0
+
+<Widgets>:
+    Button:
+        text: "Create/Edit"
+        size: 200, 100
+        on_release: root.button_show_megamatrix()
+
+    TextInput:
+        pos: 50, root.height - 100
+        multiline: False
+        size: 80,40
+        id: tb_count_alternatives
+
+    TextInput:
+        pos: 50, root.height - 200
+        multiline: False
+        size: 80, 40
+        id: tb_count_criteria
+        
+    Label:
+        text: "Number of criteria"
+        pos: 50, root.height - 190
+
+    Label:
+        text: "Number of alternatives"
+        pos: 50, root.height - 90
+
